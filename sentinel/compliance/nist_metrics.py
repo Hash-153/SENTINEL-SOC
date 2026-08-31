@@ -1,0 +1,3 @@
+"""NIST SP 800-53 playbook metrics."""
+PLAYBOOKS_LOADED = 12
+AUTO_REMEDIATION_ENABLED = True
