@@ -1,5 +1,3 @@
-"""Sentinel NIDS & SIEM Security Platform main application entrypoint."""
-
 import sys
 from sentinel.daemon.cli import main
 

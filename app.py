@@ -1,11 +1,8 @@
-"""Sentinel application bootstrap and service runner."""
-
 from sentinel.daemon.service import SentinelService
 from sentinel.core.config import SentinelConfig
 
 
 def create_app() -> SentinelService:
-    """Factory creating configured Sentinel NIDS & SIEM instance."""
     config = SentinelConfig.load_from_env()
     service = SentinelService(config)
     return service

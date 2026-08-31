@@ -1,5 +1,4 @@
 # Zero third-party dependencies required.
 # Pure Python Standard Library (>=3.9) implementation.
-# Optional development and testing tooling:
 pytest>=7.0.0
 pytest-cov>=4.0.0

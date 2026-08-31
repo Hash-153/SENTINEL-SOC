@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-"""Setup script for Sentinel Security Platform."""
-
 from setuptools import setup, find_packages
 
 setup(

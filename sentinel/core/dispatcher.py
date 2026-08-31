@@ -1,5 +1,4 @@
 """Asynchronous thread-safe event dispatcher and pub/sub message bus."""
-
 import queue
 import threading
 from typing import Callable, List, TypeVar, Generic
@@ -9,8 +8,6 @@ T = TypeVar("T")
 
 
 class EventQueue(Generic[T]):
-    """Thread-safe generic FIFO queue with non-blocking dispatching."""
-
     def __init__(self, maxsize: int = 10000) -> None:
         self._queue: queue.Queue[T] = queue.Queue(maxsize=maxsize)
         self._subscribers: List[Callable[[T], None]] = []
@@ -28,7 +25,6 @@ class EventQueue(Generic[T]):
             self._queue.put_nowait(item)
             return True
         except queue.Full:
-            # Drop or backpressure when congested
             return False
 
     def start(self, name: str = "DispatcherWorker") -> None:
@@ -54,15 +50,12 @@ class EventQueue(Generic[T]):
             for cb in callbacks:
                 try:
                     cb(item)
-                except Exception as ex:
-                    # Isolate subscriber failures
+                except Exception:
                     pass
             self._queue.task_done()
 
 
 class SentinelDispatcher:
-    """Central event coordinator orchestrating packet ingestion, analysis, storage, and alerts."""
-
     def __init__(self) -> None:
         self.packet_bus: EventQueue[DecodedPacket] = EventQueue(maxsize=20000)
         self.event_bus: EventQueue[SecurityEvent] = EventQueue(maxsize=10000)

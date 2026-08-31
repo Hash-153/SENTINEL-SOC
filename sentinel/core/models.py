@@ -1,5 +1,4 @@
 """Core domain models and strongly-typed data structures for Sentinel."""
-
 from __future__ import annotations
 import enum
 import time
@@ -31,13 +30,7 @@ class AlertSeverity(enum.Enum):
 
     @property
     def score(self) -> int:
-        mapping = {
-            "INFO": 10,
-            "LOW": 25,
-            "MEDIUM": 50,
-            "HIGH": 75,
-            "CRITICAL": 100,
-        }
+        mapping = {"INFO": 10, "LOW": 25, "MEDIUM": 50, "HIGH": 75, "CRITICAL": 100}
         return mapping.get(self.value, 0)
 
 
@@ -104,18 +97,12 @@ class TCPHeader:
     @property
     def flags_summary(self) -> str:
         flags = []
-        if self.flag_syn:
-            flags.append("SYN")
-        if self.flag_ack:
-            flags.append("ACK")
-        if self.flag_fin:
-            flags.append("FIN")
-        if self.flag_rst:
-            flags.append("RST")
-        if self.flag_psh:
-            flags.append("PSH")
-        if self.flag_urg:
-            flags.append("URG")
+        if self.flag_syn: flags.append("SYN")
+        if self.flag_ack: flags.append("ACK")
+        if self.flag_fin: flags.append("FIN")
+        if self.flag_rst: flags.append("RST")
+        if self.flag_psh: flags.append("PSH")
+        if self.flag_urg: flags.append("URG")
         return "|".join(flags) if flags else "NONE"
 
 
@@ -192,38 +179,28 @@ class DecodedPacket:
 
     @property
     def src_port(self) -> Optional[int]:
-        if self.tcp:
-            return self.tcp.src_port
-        if self.udp:
-            return self.udp.src_port
+        if self.tcp: return self.tcp.src_port
+        if self.udp: return self.udp.src_port
         return None
 
     @property
     def dst_port(self) -> Optional[int]:
-        if self.tcp:
-            return self.tcp.dst_port
-        if self.udp:
-            return self.udp.dst_port
+        if self.tcp: return self.tcp.dst_port
+        if self.udp: return self.udp.dst_port
         return None
 
     @property
     def protocol_name(self) -> str:
-        if self.tcp:
-            return "TCP"
-        if self.udp:
-            return "UDP"
-        if self.ip:
-            return self.ip.protocol.name
+        if self.tcp: return "TCP"
+        if self.udp: return "UDP"
+        if self.ip: return self.ip.protocol.name
         return "UNKNOWN"
 
     @property
     def payload(self) -> bytes:
-        if self.tcp:
-            return self.tcp.payload
-        if self.udp:
-            return self.udp.payload
-        if self.ip:
-            return self.ip.payload
+        if self.tcp: return self.tcp.payload
+        if self.udp: return self.udp.payload
+        if self.ip: return self.ip.payload
         return self.raw_data
 
 
