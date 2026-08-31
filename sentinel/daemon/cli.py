@@ -92,8 +92,13 @@ def display_alerts(service: SentinelService, limit: int = 20) -> None:
     print()
 
 
+from sentinel.dashboard.web_server import DashboardServer
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sentinel Enterprise Network Intrusion Detection & SIEM Engine")
+    parser.add_argument("--web", action="store_true", help="Launch interactive Web SOC Dashboard server")
+    parser.add_argument("--port", type=int, default=8080, help="Web dashboard port (default: 8080)")
     parser.add_argument("--simulate-attacks", action="store_true", help="Run built-in multi-vector attack simulation drill")
     parser.add_argument("--pcap", type=str, help="Analyze offline PCAP file")
     parser.add_argument("--live", action="store_true", help="Start real-time raw socket capture")
@@ -113,9 +118,18 @@ def main() -> None:
 
     service = SentinelService(config)
     service.start()
+    web_server = None
 
     try:
-        if args.simulate_attacks:
+        if args.web:
+            # Seed initial drill data for immediate rich visual display
+            run_attack_simulation(service, count=1)
+            web_server = DashboardServer(service, host="127.0.0.1", port=args.port)
+            web_server.start()
+            print("[*] Press Ctrl+C to stop the Web Dashboard server.")
+            while True:
+                time.sleep(1.0)
+        elif args.simulate_attacks:
             run_attack_simulation(service)
             display_stats(service)
             display_incidents(service)
@@ -136,12 +150,19 @@ def main() -> None:
         elif args.dump_alerts:
             display_alerts(service)
         else:
-            run_attack_simulation(service)
+            # Default action: populate drill and launch Web Dashboard
+            run_attack_simulation(service, count=1)
             display_stats(service)
-            display_incidents(service)
+            web_server = DashboardServer(service, host="127.0.0.1", port=args.port)
+            web_server.start()
+            print("[*] Press Ctrl+C to stop the Web Dashboard server.")
+            while True:
+                time.sleep(1.0)
     except KeyboardInterrupt:
         print("\n[*] Stopping Sentinel Service...")
     finally:
+        if web_server:
+            web_server.stop()
         service.stop()
         print("[+] Sentinel Service stopped safely.")
 
