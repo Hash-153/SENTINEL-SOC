@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Databases & local audit logs
+*.db
+*.sqlite3
+*.log
+*.jsonl
+
+# Archives & build artifacts
+*.zip
+*.tar.gz
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.coverage
